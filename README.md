@@ -18,94 +18,89 @@ Explanations
 I've created those **cvars** to customise your server. 
 
 Just add those cvars to change their default value in **server.cfg / autoexec.cfg** :
-> - sm_retakes_weapon_mimic_competitive_pistol_rounds
->   - **default 1**
->   - with this option, pistol rounds are played like a 800$ round. 
->       - 66% kevlar for glock/usp/hkp2000 players (-650$)
->       - then 66% kit for ct (-400$)
->       - then nade**s** if enough money
-> - sm_retakes_weapon_primary_enabled
+> - sm_retakes_weapon_pistolrounds
 >   - **default 1**
 >   - *you can set it to 0 if you want a gunmode*
-> - sm_retakes_weapon_nades_enabled
->   - **default 1**
->   - *you can set it to 0 if you don't want nades (all types)*
-> - sm_retakes_weapon_nades_hegrenade_ct_max
->   - **default 1**
->   - *this is the max number of HE nades for the whole CT team*
->   - *you can set it to 0 to forbid hegrenade on CT side*
-> - sm_retakes_weapon_nades_hegrenade_t_max
->   - **default 1**
->   - *this is the max number of HE nades for the whole T team*
->   - *you can set it to 0 to forbid hegrenade on T side*
-> - sm_retakes_weapon_nades_flashbang_ct_max
->   - **default 1**
->   - *this is the max number of flashbang for the whole CT team*
->   - *you can set it to 0 to forbid flashbang on CT side*
-> - sm_retakes_weapon_nades_flashbang_t_max
->   - **default 1**
->   - *this is the max number of flashbang for the whole T team*
->   - *you can set it to 0 to forbid flashbang on T side*
-> - sm_retakes_weapon_nades_smokegrenade_ct_max
->   - **default 1**
->   - *this is the max number of smokes for the whole CT team*
->   - *you can set it to 0 to forbid smokegrenade on CT side*
-> - sm_retakes_weapon_nades_smokegrenade_t_max
->   - **default 1**
->   - *this is the max number of smokes for the whole T team*
->   - *you can set it to 0 to forbid smokegrenade on T side*
-> - sm_retakes_weapon_nades_molotov_ct_max
->   - **default 1**
->   - *this is the max number of molotov for the whole CT team*
->   - *you can set it to 0 to forbid molotov on CT side*
-> - sm_retakes_weapon_nades_molotov_t_max
->   - **default 1**
->   - *this is the max number of molotov for the whole T team*
->   - *you can set it to 0 to forbid molotov on T side*
-> - sm_retakes_weapon_helmet_enabled
->   - **default 1**
->   - *you can set it to 0 to remove helmet*
-> - sm_retakes_weapon_kevlar_enabled
->   - **default 1**
->   - *you can set it to 0 to remove kevlar (previous cvar must be set to 0)*
-> - sm_retakes_weapon_awp_team_max
->   - **default 1**
->   - *this is the max number of AWP per team*
->   - *you can set it to 0 to forbid AWP*
 > - sm_retakes_weapon_pistolrounds
 >   - **default 5**
->   - *this is the number of pistol rounds at the beginning of the map. You can set 0 if you always want primary weapon*
+>   - *The number of gun rounds (0 = no gun round)*
+> - sm_retakes_weapon_mimic_competitive_pistol_rounds
+>   - **default 1**
+>   - *Whether pistol rounds are like 800$ rounds*
+> - sm_retakes_weapon_primary_enabled
+>   - **default 1**
+>   - *Whether the players can have primary weapon*
+> - sm_retakes_weapon_nades_enabled
+>   - **default 1**
+>   - *Whether the players can have nades*
+> - sm_retakes_weapon_allow_nades_on_pistol_rounds
+>   - **default 1**
+>   - *Whether the players can have nades on pistol rounds*
+> - sm_retakes_weapon_nades_hegrenade_ct_max
+>   - **default 1**
+>   - *Number of hegrenade CT team can have*
+> - sm_retakes_weapon_nades_hegrenade_t_max
+>   - **default 1**
+>   - *Number of hegrenade T team can have*
+> - sm_retakes_weapon_nades_flashbang_ct_max
+>   - **default 1**
+>   - *Number of flashbang CT team can have*
+> - sm_retakes_weapon_nades_flashbang_t_max
+>   - **default 1**
+>   - *Number of flashbang T team can have*
+> - sm_retakes_weapon_nades_smokegrenade_ct_max
+>   - **default 1**
+>   - *Number of smokegrenade CT team can have*
+> - sm_retakes_weapon_nades_smokegrenade_t_max
+>   - **default 1**
+>   - *Number of smokegrenade T team can have*
+> - sm_retakes_weapon_nades_molotov_ct_max
+>   - **default 1**
+>   - *Number of molotov CT team can have*
+> - sm_retakes_weapon_nades_molotov_t_max
+>   - **default 1**
+>   - *Number of molotov T team can have*
+> - sm_retakes_weapon_helmet_enabled
+>   - **default 1**
+>   - *Whether the players have helmet*
+> - sm_retakes_weapon_kevlar_enabled
+>   - **default 1**
+>   - *Whether the players have kevlar*
+> - sm_retakes_weapon_awp_team_max
+>   - **default 1**
+>   - *The max number of AWP per team (0 = no awp)*
 > - sm_retakes_weapon_deagle_enabled
 >   - **default 1**
->   - *you can set it to 0 to forbid Deagle*
+>   - *Whether the players can choose deagle*
+> - sm_retakes_weapon_r8_enabled
+>   - **default 1**
+>   - *Whether the players can choose revolver*
 > - sm_retakes_weapon_cz_enabled
 >   - **default 1**
->   - *you can set it to 0 to forbid CZ*
+>   - *Whether the playres can choose CZ*
 > - sm_retakes_weapon_p250_enabled
 >   - **default 1**
->   - *you can set it to 0 to forbid P250*
+>   - *Whether the players can choose P250*
 > - sm_retakes_weapon_tec9_fiveseven_enabled
 >   - **default 1**
->   - *you can set it to 0 to forbid Tec9/Fiveseven*
+>   - *Whether the players can choose Tec9/Five seven*
+> - sm_retakes_kevlar_probability_on_competitive_pistol_rounds
+>   - **default 6**
+>   - *The probability to get kevlar for each player on competitive pistol rounds. Between 0 to 10. 0 = never, 10 = always*
+> - sm_retakes_defusekit_probability_on_competitive_pistol_rounds
+>   - **default 6**
+>   - *The probability to get defusal kit for each player on competitive pistol rounds. Between 0 to 10. 0 = never, 10 = always*
+> - sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kev
+>   - **default 1**
+>   - *The relative priority to have kevlar against kit/nade. Between 1 to 3. Default 1 (first).*
+> - sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit
+>   - **default 2**
+>   - *The relative priority to have kit against kevlar/nade. Between 1 to 3. Default 2 (second).*
+> - sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad
+>   - **default 3**
+>   - *The relative priority to have nade against kevlar/kit. Between 1 to 3. Default 3 (third).*
+
 
 Guns !
 -----------------------
 **Players can write /guns /gun .guns .gun !guns !gun to change their weapons'preferences**
-
-
-> **Select a pistol:**
-> - Glock/P2000/USP-S
-> - P250
-> - Fiveseven/Tec-9
-> - CZ75
-> - Deagle
-
-> **Select a CT rifle:**
-> - M4A1
-> - M4A4
-
-> **Allow yourself to receive AWPs?**
-> - Yes
-> - No
-
-
