@@ -1,3 +1,7 @@
+#This plugin is not maintained anymore.  
+# You can fork it if you want to improve it.  
+# Many thanks to all of people who used it and still use it.
+
 Customised Weapon Allocator 
 -------------------
 
