@@ -51,12 +51,16 @@ const int gun_price_for_r8 = 800;
 const int kit_price = 400;
 const int kevlar_price = 650;
 
+int g_PistolRchoiceCT[MAXPLAYERS+1];
+int g_PistolRchoiceT[MAXPLAYERS+1];
 int g_PistolchoiceCT[MAXPLAYERS+1];
 int g_PistolchoiceT[MAXPLAYERS+1];
 int g_RifleChoiceCT[MAXPLAYERS+1];
 int g_RifleChoiceT[MAXPLAYERS+1];
 bool g_AwpChoice[MAXPLAYERS+1];
 int g_side[MAXPLAYERS+1];
+Handle g_hPISTOLRChoiceCookieCT = INVALID_HANDLE;
+Handle g_hPISTOLRChoiceCookieT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieCT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieCT = INVALID_HANDLE;
@@ -111,6 +115,8 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
+    g_hPISTOLRChoiceCookieCT = RegClientCookie("retakes_pistolrchoice_ct", "", CookieAccess_Private);
+    g_hPISTOLRChoiceCookieT = RegClientCookie("retakes_pistolrchoice_t", "", CookieAccess_Private);
     g_hGUNChoiceCookieCT = RegClientCookie("retakes_pistolchoice_ct", "", CookieAccess_Private);
     g_hGUNChoiceCookieT = RegClientCookie("retakes_pistolchoice_t", "", CookieAccess_Private);
     g_hRifleChoiceCookieCT  = RegClientCookie("retakes_riflechoice_ct", "", CookieAccess_Private);
@@ -179,9 +185,9 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
             {
                 // on est pas T only
                 if (g_side[client] != 1)
-                    GivePistolMenuCT(client);
+                    GivePistolRMenuCT(client);
                 else
-                    GivePistolMenuT(client);
+                    GivePistolRMenuT(client);
             }
             break;
         }
@@ -201,6 +207,8 @@ public void OnClientCookiesCached(int client) {
     if (IsFakeClient(client))
         return;
 
+    g_PistolRchoiceCT[client]  = GetCookieInt(client, g_hPISTOLRChoiceCookieCT);
+    g_PistolRchoiceT[client]  = GetCookieInt(client, g_hPISTOLRChoiceCookieT);
     g_PistolchoiceCT[client]  = GetCookieInt(client, g_hGUNChoiceCookieCT);
     g_PistolchoiceT[client]  = GetCookieInt(client, g_hGUNChoiceCookieT);
     g_RifleChoiceCT[client] = GetCookieInt(client, g_hRifleChoiceCookieCT);
@@ -400,35 +408,69 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                 }
             }
         }
-
-        if (g_PistolchoiceT[client] == pistol_choice_t_p250 && GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+        if (isPistolRound)
         {
-            secondary = "weapon_p250";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_p250;
-        }
-        else if (g_PistolchoiceT[client] == pistol_choice_t_tec9 && GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
-        {
-            secondary = "weapon_tec9";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_tec9;
-        }
-        else if (g_PistolchoiceT[client] == pistol_choice_t_cz && GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
-        {
-            secondary = "weapon_cz75a";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_cz;
-        }
-        else if (g_PistolchoiceT[client] == pistol_choice_t_deagle && GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
-        {
-            secondary = "weapon_deagle";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_deagle;
-        }
-        else if (g_PistolchoiceT[client] == pistol_choice_t_r8 && GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
-        {
-            secondary = "weapon_revolver";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            if (g_PistolRchoiceT[client] == pistol_choice_t_p250 && GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+            {
+                secondary = "weapon_p250";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_p250;
+            }
+            else if (g_PistolRchoiceT[client] == pistol_choice_t_tec9 && GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
+            {
+                secondary = "weapon_tec9";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_tec9;
+            }
+            else if (g_PistolRchoiceT[client] == pistol_choice_t_cz && GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
+            {
+                secondary = "weapon_cz75a";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_cz;
+            }
+            else if (g_PistolRchoiceT[client] == pistol_choice_t_deagle && GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
+            {
+                secondary = "weapon_deagle";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_deagle;
+            }
+            else if (g_PistolRchoiceT[client] == pistol_choice_t_r8 && GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
+            {
+                secondary = "weapon_revolver";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else
+            {
+                secondary = "weapon_glock";
+            }
         }
         else
         {
-            secondary = "weapon_glock";
+            if (g_PistolchoiceT[client] == pistol_choice_t_p250 && GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+            {
+                secondary = "weapon_p250";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_p250;
+            }
+            else if (g_PistolchoiceT[client] == pistol_choice_t_tec9 && GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
+            {
+                secondary = "weapon_tec9";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_tec9;
+            }
+            else if (g_PistolchoiceT[client] == pistol_choice_t_cz && GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
+            {
+                secondary = "weapon_cz75a";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_cz;
+            }
+            else if (g_PistolchoiceT[client] == pistol_choice_t_deagle && GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
+            {
+                secondary = "weapon_deagle";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_deagle;
+            }
+            else if (g_PistolchoiceT[client] == pistol_choice_t_r8 && GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
+            {
+                secondary = "weapon_revolver";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else
+            {
+                secondary = "weapon_glock";
+            }
         }
 
         health = 100;
@@ -511,38 +553,77 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
             }
         }
 
-        if (g_PistolchoiceCT[client] == pistol_choice_ct_p250 && GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+        if (isPistolRound)
         {
-            secondary = "weapon_p250";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_p250;
-        }
-        else if (g_PistolchoiceCT[client] == pistol_choice_ct_fiveseven && GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
-        {
-            secondary = "weapon_fiveseven";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_fiveseven;
-        }
-        else if (g_PistolchoiceCT[client] == pistol_choice_ct_cz && GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
-        {
-            secondary = "weapon_cz75a";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_cz;
-        }
-        else if (g_PistolchoiceCT[client] == pistol_choice_ct_deagle && GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
-        {
-            secondary = "weapon_deagle";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_deagle;
-        }
-        else if (g_PistolchoiceCT[client] == pistol_choice_ct_r8 && GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
-        {
-            secondary = "weapon_revolver";
-            dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
-        }
-        else if (g_PistolchoiceCT[client] == pistol_choice_ct_usp)
-        {
-            secondary = "weapon_usp_silencer";
+            if (g_PistolRchoiceCT[client] == pistol_choice_ct_p250 && GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+            {
+                secondary = "weapon_p250";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_p250;
+            }
+            else if (g_PistolRchoiceCT[client] == pistol_choice_ct_fiveseven && GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
+            {
+                secondary = "weapon_fiveseven";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_fiveseven;
+            }
+            else if (g_PistolRchoiceCT[client] == pistol_choice_ct_cz && GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
+            {
+                secondary = "weapon_cz75a";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_cz;
+            }
+            else if (g_PistolRchoiceCT[client] == pistol_choice_ct_deagle && GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
+            {
+                secondary = "weapon_deagle";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_deagle;
+            }
+            else if (g_PistolRchoiceCT[client] == pistol_choice_ct_r8 && GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
+            {
+                secondary = "weapon_revolver";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else if (g_PistolRchoiceCT[client] == pistol_choice_ct_usp)
+            {
+                secondary = "weapon_usp_silencer";
+            }
+            else
+            {
+                secondary = "weapon_hkp2000";
+            }
         }
         else
         {
-            secondary = "weapon_hkp2000";
+            if (g_PistolchoiceCT[client] == pistol_choice_ct_p250 && GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+            {
+                secondary = "weapon_p250";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_p250;
+            }
+            else if (g_PistolchoiceCT[client] == pistol_choice_ct_fiveseven && GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
+            {
+                secondary = "weapon_fiveseven";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_fiveseven;
+            }
+            else if (g_PistolchoiceCT[client] == pistol_choice_ct_cz && GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
+            {
+                secondary = "weapon_cz75a";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_cz;
+            }
+            else if (g_PistolchoiceCT[client] == pistol_choice_ct_deagle && GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
+            {
+                secondary = "weapon_deagle";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_deagle;
+            }
+            else if (g_PistolchoiceCT[client] == pistol_choice_ct_r8 && GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
+            {
+                secondary = "weapon_revolver";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else if (g_PistolchoiceCT[client] == pistol_choice_ct_usp)
+            {
+                secondary = "weapon_usp_silencer";
+            }
+            else
+            {
+                secondary = "weapon_hkp2000";
+            }
         }
 
         health = 100;
@@ -661,9 +742,76 @@ public bool getkit(bool mimicCompetitivePistolRounds, bool isPistolRound)
     return kit;
 }
 
+public void GivePistolRMenuCT(int client) {
+    Handle menu = CreateMenu(MenuHandler_PISTOLR_CT);
+    SetMenuTitle(menu, "Select a CT PR pistol:");
+    AddMenuInt(menu, pistol_choice_ct_hkp2000, "P2000");
+    AddMenuInt(menu, pistol_choice_ct_usp, "USP-S");
+    if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_p250, "P250");
+    if (GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_fiveseven, "Fiveseven");
+    if (GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_cz, "CZ75");
+    if (GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_deagle, "Deagle");
+    if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_r8, "Revolver");
+    DisplayMenu(menu, client, MENU_TIME_LENGTH);
+}
+
+public void GivePistolRMenuT(int client) {
+    Handle menu = CreateMenu(MenuHandler_PISTOLR_T);
+    SetMenuTitle(menu, "Select a T PR pistol:");
+    AddMenuInt(menu, pistol_choice_t_glock, "Glock");
+    if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_p250, "P250");
+    if (GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_tec9, "Tec-9");
+    if (GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_cz, "CZ75");
+    if (GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_deagle, "Deagle");
+    if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_r8, "Revolver");
+    DisplayMenu(menu, client, MENU_TIME_LENGTH);
+}
+
+public int MenuHandler_PISTOLR_CT(Handle menu, MenuAction action, int param1, int param2) {
+    if (action == MenuAction_Select) {
+        int client = param1;
+        int gunchoice = GetMenuInt(menu, param2);
+        g_PistolRchoiceCT[client] = gunchoice;
+        SetCookieInt(client, g_hPISTOLRChoiceCookieCT, gunchoice);
+        // on est pas CT only
+        if (g_side[client] != 2)
+            GivePistolRMenuT(client);
+        else
+            GivePistolMenuCT(client);
+    } else if (action == MenuAction_End) {
+        CloseHandle(menu);
+    }
+}
+
+public int MenuHandler_PISTOLR_T(Handle menu, MenuAction action, int param1, int param2) {
+    if (action == MenuAction_Select) {
+        int client = param1;
+        int gunchoice = GetMenuInt(menu, param2);
+        g_PistolRchoiceT[client] = gunchoice;
+        SetCookieInt(client, g_hPISTOLRChoiceCookieT, gunchoice);
+        // on est pas T only
+        if (g_side[client] != 1)
+            GivePistolMenuCT(client);
+        else
+            GivePistolMenuT(client);
+    } else if (action == MenuAction_End) {
+        CloseHandle(menu);
+    }
+}
+
 public void GivePistolMenuCT(int client) {
     Handle menu = CreateMenu(MenuHandler_PISTOL_CT);
-    SetMenuTitle(menu, "Select a CT pistol:");
+    SetMenuTitle(menu, "Select a CT GR pistol:");
     AddMenuInt(menu, pistol_choice_ct_hkp2000, "P2000");
     AddMenuInt(menu, pistol_choice_ct_usp, "USP-S");
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
@@ -681,7 +829,7 @@ public void GivePistolMenuCT(int client) {
 
 public void GivePistolMenuT(int client) {
     Handle menu = CreateMenu(MenuHandler_PISTOL_T);
-    SetMenuTitle(menu, "Select a T pistol:");
+    SetMenuTitle(menu, "Select a T GR pistol:");
     AddMenuInt(menu, pistol_choice_t_glock, "Glock");
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
         AddMenuInt(menu, pistol_choice_t_p250, "P250");
