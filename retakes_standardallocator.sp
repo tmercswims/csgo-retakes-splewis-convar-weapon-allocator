@@ -57,7 +57,8 @@ int g_PistolchoiceCT[MAXPLAYERS+1];
 int g_PistolchoiceT[MAXPLAYERS+1];
 int g_RifleChoiceCT[MAXPLAYERS+1];
 int g_RifleChoiceT[MAXPLAYERS+1];
-bool g_AwpChoice[MAXPLAYERS+1];
+bool g_AwpChoiceT[MAXPLAYERS+1];
+bool g_AwpChoiceCT[MAXPLAYERS+1];
 int g_side[MAXPLAYERS+1];
 Handle g_hPISTOLRChoiceCookieCT = INVALID_HANDLE;
 Handle g_hPISTOLRChoiceCookieT = INVALID_HANDLE;
@@ -65,7 +66,8 @@ Handle g_hGUNChoiceCookieCT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieCT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieT = INVALID_HANDLE;
-Handle g_hAwpChoiceCookie = INVALID_HANDLE;
+Handle g_hAwpChoiceCookieCT = INVALID_HANDLE;
+Handle g_hAwpChoiceCookieT = INVALID_HANDLE;
 
 Handle g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_primary_enabled = INVALID_HANDLE;
@@ -121,7 +123,8 @@ public void OnPluginStart() {
     g_hGUNChoiceCookieT = RegClientCookie("retakes_pistolchoice_t", "", CookieAccess_Private);
     g_hRifleChoiceCookieCT  = RegClientCookie("retakes_riflechoice_ct", "", CookieAccess_Private);
     g_hRifleChoiceCookieT  = RegClientCookie("retakes_riflechoice_t", "", CookieAccess_Private);
-    g_hAwpChoiceCookie = RegClientCookie("retakes_awpchoice", "", CookieAccess_Private); 
+    g_hAwpChoiceCookieCT = RegClientCookie("retakes_awpchoice_ct", "", CookieAccess_Private);
+    g_hAwpChoiceCookieT = RegClientCookie("retakes_awpchoice_t", "", CookieAccess_Private);
 
     g_h_sm_retakes_weapon_pistolrounds = CreateConVar("sm_retakes_weapon_pistolrounds", "5", "The number of gun rounds (0 = no gun round)");
     g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = CreateConVar("sm_retakes_weapon_mimic_competitive_pistol_rounds", "1", "Whether pistol rounds are like 800$ rounds");
@@ -162,7 +165,8 @@ public void OnClientConnected(int client) {
     g_RifleChoiceCT[client] = rifle_choice_ct_m4a4;
     g_RifleChoiceT[client] = rifle_choice_t_ak47;
     g_side[client] = 0;
-    g_AwpChoice[client] = false;
+    g_AwpChoiceT[client] = false;
+    g_AwpChoiceCT[client] = false;
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] args) {
@@ -213,7 +217,8 @@ public void OnClientCookiesCached(int client) {
     g_PistolchoiceT[client]  = GetCookieInt(client, g_hGUNChoiceCookieT);
     g_RifleChoiceCT[client] = GetCookieInt(client, g_hRifleChoiceCookieCT);
     g_RifleChoiceT[client] = GetCookieInt(client, g_hRifleChoiceCookieT);
-    g_AwpChoice[client]  = GetCookieBool(client, g_hAwpChoiceCookie);
+    g_AwpChoiceCT[client]  = GetCookieBool(client, g_hAwpChoiceCookieCT);
+    g_AwpChoiceT[client]  = GetCookieBool(client, g_hAwpChoiceCookieT);
 }
 
 static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool competitivePistolRound) {
@@ -392,7 +397,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
         {
             int randGiveAwp = GetRandomInt(0, 1);
 
-            if (giveTAwp && g_AwpChoice[client] && randGiveAwp == 1 && awp_given < GetConVarInt(g_h_sm_retakes_weapon_awp_team_max)) {
+            if (giveTAwp && g_AwpChoiceT[client] && randGiveAwp == 1 && awp_given < GetConVarInt(g_h_sm_retakes_weapon_awp_team_max)) {
                 primary = "weapon_awp";
                 giveTAwp = false;
                 awp_given = awp_given + 1;
@@ -534,7 +539,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
         {
             int randGiveAwp = GetRandomInt(0, 1);
 
-            if (giveCTAwp && g_AwpChoice[client] && randGiveAwp == 1 && awp_given < GetConVarInt(g_h_sm_retakes_weapon_awp_team_max)) {
+            if (giveCTAwp && g_AwpChoiceCT[client] && randGiveAwp == 1 && awp_given < GetConVarInt(g_h_sm_retakes_weapon_awp_team_max)) {
                 primary = "weapon_awp";
                 giveCTAwp = false;
                 awp_given = awp_given + 1;
@@ -732,7 +737,7 @@ public bool getkit(bool mimicCompetitivePistolRounds, bool isPistolRound)
     if(dollars_for_mimic_competitive_pistol_rounds >= kit_price && isPistolRound && mimicCompetitivePistolRounds)
     {
         odds = GetRandomInt(0,10);
-        // pourcentage between 0% to 100% to get kit if money before nades
+        // percentage between 0% to 100% to get kit if money before nades
         if (odds <= GetConVarInt(g_h_sm_retakes_defusekit_probability_on_comp_pistol_rounds))
         {
             kit = true;
@@ -905,7 +910,7 @@ public int MenuHandler_RIFLE_CT(Handle menu, MenuAction action, int param1, int 
         if (g_side[client] != 2)
             GiveWeaponMenuT(client);
         else if (GetConVarInt(g_h_sm_retakes_weapon_awp_team_max) > 0)
-            GiveAwpMenu(client);
+            GiveAwpMenuCT(client);
         else
             CloseHandle(menu);
     } else if (action == MenuAction_End) {
@@ -919,8 +924,10 @@ public int MenuHandler_RIFLE_T(Handle menu, MenuAction action, int param1, int p
         int riflechoice = GetMenuInt(menu, param2);
         g_RifleChoiceT[client] = riflechoice;
         SetCookieInt(client, g_hRifleChoiceCookieT, riflechoice);
-        if (GetConVarInt(g_h_sm_retakes_weapon_awp_team_max) > 0)
-            GiveAwpMenu(client);
+        if (g_side[client] != 1 && GetConVarInt(g_h_sm_retakes_weapon_awp_team_max) > 0)
+            GiveAwpMenuCT(client);
+        else if (GetConVarInt(g_h_sm_retakes_weapon_awp_team_max) > 0)
+            GiveAwpMenuT(client);
         else
             CloseHandle(menu);
     } else if (action == MenuAction_End) {
@@ -928,20 +935,44 @@ public int MenuHandler_RIFLE_T(Handle menu, MenuAction action, int param1, int p
     }
 }
 
-public void GiveAwpMenu(int client) {
-    Handle menu = CreateMenu(MenuHandler_AWP);
-    SetMenuTitle(menu, "Allow yourself to receive AWPs?");
+public void GiveAwpMenuCT(int client) {
+    Handle menu = CreateMenu(MenuHandler_AWP_CT);
+    SetMenuTitle(menu, "Allow yourself to receive AWPs on CT side?");
     AddMenuBool(menu, true, "Yes");
     AddMenuBool(menu, false, "No");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
-public int MenuHandler_AWP(Handle menu, MenuAction action, int param1, int param2) {
+public void GiveAwpMenuT(int client) {
+    Handle menu = CreateMenu(MenuHandler_AWP_T);
+    SetMenuTitle(menu, "Allow yourself to receive AWPs on T side?");
+    AddMenuBool(menu, true, "Yes");
+    AddMenuBool(menu, false, "No");
+    DisplayMenu(menu, client, MENU_TIME_LENGTH);
+}
+
+public int MenuHandler_AWP_CT(Handle menu, MenuAction action, int param1, int param2) {
     if (action == MenuAction_Select) {
         int client = param1;
         bool allowAwps = GetMenuBool(menu, param2);
-        g_AwpChoice[client] = allowAwps;
-        SetCookieBool(client, g_hAwpChoiceCookie, allowAwps);
+        g_AwpChoiceCT[client] = allowAwps;
+        SetCookieBool(client, g_hAwpChoiceCookieCT, allowAwps);
+        if (g_side[client] != 2)
+            GiveAwpMenuT(client);
+        else
+            CloseHandle(menu);
+    } else if (action == MenuAction_End) {
+        CloseHandle(menu);
+    }
+}
+
+public int MenuHandler_AWP_T(Handle menu, MenuAction action, int param1, int param2) {
+    if (action == MenuAction_Select) {
+        int client = param1;
+        bool allowAwps = GetMenuBool(menu, param2);
+        g_AwpChoiceT[client] = allowAwps;
+        SetCookieBool(client, g_hAwpChoiceCookieT, allowAwps);
+        CloseHandle(menu);
     } else if (action == MenuAction_End) {
         CloseHandle(menu);
     }
