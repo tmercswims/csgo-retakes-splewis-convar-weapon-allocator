@@ -15,10 +15,32 @@ const int rifle_choice_ct_famas = 1;
 const int rifle_choice_ct_m4a4 = 2;
 const int rifle_choice_ct_m4a1_s = 3;
 const int rifle_choice_ct_aug = 4;
+const int rifle_choice_ct_ssg08 = 5;
+const int rifle_choice_ct_mp9 = 6;
+const int rifle_choice_ct_mp7 = 7;
+const int rifle_choice_ct_ump45 = 8;
+const int rifle_choice_ct_p90 = 9;
+const int rifle_choice_ct_bizon = 10;
+const int rifle_choice_ct_nova = 11;
+const int rifle_choice_ct_xm1014 = 12;
+const int rifle_choice_ct_mag7 = 13;
+const int rifle_choice_ct_m249 = 14;
+const int rifle_choice_ct_negev = 15;
 
 const int rifle_choice_t_galil = 1;
 const int rifle_choice_t_ak47 = 2;
 const int rifle_choice_t_sg553 = 3;
+const int rifle_choice_t_ssg08 = 4;
+const int rifle_choice_t_mac10 = 5;
+const int rifle_choice_t_mp7 = 6;
+const int rifle_choice_t_ump45 = 7;
+const int rifle_choice_t_p90 = 8;
+const int rifle_choice_t_bizon = 9;
+const int rifle_choice_t_nova = 10;
+const int rifle_choice_t_xm1014 = 11;
+const int rifle_choice_t_sawedoff = 12;
+const int rifle_choice_t_m249 = 13;
+const int rifle_choice_t_negev = 14;
 
 const int pistol_choice_ct_hkp2000 = 1;
 const int pistol_choice_ct_usp = 7;
@@ -27,6 +49,7 @@ const int pistol_choice_ct_fiveseven = 3;
 const int pistol_choice_ct_cz = 4;
 const int pistol_choice_ct_deagle = 5;
 const int pistol_choice_ct_r8 = 6;
+const int pistol_choice_ct_dualies = 8;
 
 const int pistol_choice_t_glock = 1;
 const int pistol_choice_t_p250 = 2;
@@ -34,6 +57,7 @@ const int pistol_choice_t_tec9 = 3;
 const int pistol_choice_t_cz = 4;
 const int pistol_choice_t_deagle = 5;
 const int pistol_choice_t_r8 = 6;
+const int pistol_choice_t_dualies = 7;
 
 const int nade_price_for_hegrenade = 300;
 const int nade_price_for_flashbang = 200;
@@ -46,7 +70,8 @@ const int gun_price_for_cz = 500;
 const int gun_price_for_fiveseven = 500;
 const int gun_price_for_tec9 = 500;
 const int gun_price_for_deagle = 700;
-const int gun_price_for_r8 = 800;
+const int gun_price_for_r8 = 600;
+const int gun_price_for_dualies = 400;
 
 const int kit_price = 400;
 const int kevlar_price = 650;
@@ -71,6 +96,7 @@ Handle g_hAwpChoiceCookieT = INVALID_HANDLE;
 
 Handle g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_primary_enabled = INVALID_HANDLE;
+
 Handle g_h_sm_retakes_weapon_nades_enabled = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_nades_hegrenade_ct_max = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_nades_hegrenade_t_max = INVALID_HANDLE;
@@ -80,16 +106,22 @@ Handle g_h_sm_retakes_weapon_nades_smokegrenade_ct_max = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_nades_smokegrenade_t_max = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_nades_molotov_ct_max = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_nades_molotov_t_max = INVALID_HANDLE;
+
 Handle g_h_sm_retakes_weapon_helmet_enabled = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_kevlar_enabled = INVALID_HANDLE;
+
 Handle g_h_sm_retakes_weapon_awp_team_max = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_pistolrounds  = INVALID_HANDLE;
+
 Handle g_h_sm_retakes_weapon_deagle_enabled  = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_r8_enabled  = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_cz_enabled  = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_p250_enabled  = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_tec9_fiveseven_enabled = INVALID_HANDLE;
+Handle g_h_sm_retakes_weapon_dualies_enabled = INVALID_HANDLE;
+
 Handle g_h_sm_retakes_weapon_allow_nades_on_pistol_rounds = INVALID_HANDLE;
+
 Handle g_h_sm_retakes_kevlar_probability_on_comp_pistol_rounds = INVALID_HANDLE;
 Handle g_h_sm_retakes_defusekit_probability_on_comp_pistol_rounds = INVALID_HANDLE;
 
@@ -110,10 +142,10 @@ int dollars_for_mimic_competitive_pistol_rounds;
 
 public Plugin myinfo = {
     name = "CS:GO Retakes: Customised Weapon Allocator for splewis retakes plugin",
-    author = "BatMen",
-    description = "Defines convars to customize weapon allocator of splewig retakes plugin",
+    author = "BatMen, modified by tmerc",
+    description = "Defines convars to customize weapon allocator of splewis retakes plugin",
     version = PLUGIN_VERSION,
-    url = "https://github.com/BatMen/csgo-retakes-splewis-convar-weapon-allocator"
+    url = "https://github.com/tmercswims/csgo-retakes-splewis-convar-weapon-allocator"
 };
 
 public void OnPluginStart() {
@@ -129,7 +161,7 @@ public void OnPluginStart() {
     g_h_sm_retakes_weapon_pistolrounds = CreateConVar("sm_retakes_weapon_pistolrounds", "5", "The number of gun rounds (0 = no gun round)");
     g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = CreateConVar("sm_retakes_weapon_mimic_competitive_pistol_rounds", "1", "Whether pistol rounds are like 800$ rounds");
     g_h_sm_retakes_weapon_primary_enabled = CreateConVar("sm_retakes_weapon_primary_enabled", "1", "Whether the players can have primary weapon");
-    
+
     g_h_sm_retakes_weapon_nades_enabled = CreateConVar("sm_retakes_weapon_nades_enabled", "1", "Whether the players can have nades");
     g_h_sm_retakes_weapon_allow_nades_on_pistol_rounds = CreateConVar("sm_retakes_weapon_allow_nades_on_pistol_rounds", "1", "Whether the players can have nades on pistol rounds");
     g_h_sm_retakes_weapon_nades_hegrenade_ct_max = CreateConVar("sm_retakes_weapon_nades_hegrenade_ct_max", "1", "Number of hegrenade CT team can have");
@@ -140,28 +172,31 @@ public void OnPluginStart() {
     g_h_sm_retakes_weapon_nades_smokegrenade_t_max = CreateConVar("sm_retakes_weapon_nades_smokegrenade_t_max", "1", "Number of smokegrenade T team can have");
     g_h_sm_retakes_weapon_nades_molotov_ct_max = CreateConVar("sm_retakes_weapon_nades_molotov_ct_max", "1", "Number of molotov CT team can have");
     g_h_sm_retakes_weapon_nades_molotov_t_max = CreateConVar("sm_retakes_weapon_nades_molotov_t_max", "1", "Number of molotov T team can have");
-    
+
     g_h_sm_retakes_weapon_helmet_enabled = CreateConVar("sm_retakes_weapon_helmet_enabled", "1", "Whether the players have helmet");
     g_h_sm_retakes_weapon_kevlar_enabled = CreateConVar("sm_retakes_weapon_kevlar_enabled", "1", "Whether the players have kevlar");
     g_h_sm_retakes_weapon_awp_team_max = CreateConVar("sm_retakes_weapon_awp_team_max", "1", "The max number of AWP per team (0 = no awp)");
-    
+
     g_h_sm_retakes_weapon_deagle_enabled = CreateConVar("sm_retakes_weapon_deagle_enabled", "1", "Whether the players can choose deagle");
     g_h_sm_retakes_weapon_r8_enabled = CreateConVar("sm_retakes_weapon_r8_enabled", "1", "Whether the players can choose revolver");
     g_h_sm_retakes_weapon_cz_enabled = CreateConVar("sm_retakes_weapon_cz_enabled", "1", "Whether the playres can choose CZ");
     g_h_sm_retakes_weapon_p250_enabled = CreateConVar("sm_retakes_weapon_p250_enabled", "1", "Whether the players can choose P250");
     g_h_sm_retakes_weapon_tec9_fiveseven_enabled = CreateConVar("sm_retakes_weapon_tec9_fiveseven_enabled", "1", "Whether the players can choose Tec9/Five seven");
-    
+    g_h_sm_retakes_weapon_dualies_enabled = CreateConVar("sm_retakes_weapon_dualies_enabled", "1", "Whether the players can choose Dual Berettas");
+
     g_h_sm_retakes_kevlar_probability_on_comp_pistol_rounds = CreateConVar("sm_retakes_kevlar_probability_on_competitive_pistol_rounds", "6", "The probability to get kevlar for each player on competitive pistol rounds. Between 0 to 10. 0 = never, 10 = always");
     g_h_sm_retakes_defusekit_probability_on_comp_pistol_rounds = CreateConVar("sm_retakes_defusekit_probability_on_competitive_pistol_rounds", "6", "The probability to get defusal kit for each player on competitive pistol rounds. Between 0 to 10. 0 = never, 10 = always");
-    
+
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kev = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kev", "1", "The relative priority to have kevlar against kit/nade. Between 1 to 3. Default 1 (first).");
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit", "2", "The relative priority to have kit against kevlar/nade. Between 1 to 3. Default 2 (second).");
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad", "3", "The relative priority to have nade against kevlar/kit. Between 1 to 3. Default 3 (third).");
 }
 
 public void OnClientConnected(int client) {
+    g_PistolRchoiceCT[client] = pistol_choice_ct_hkp2000;
     g_PistolchoiceCT[client] = pistol_choice_ct_hkp2000;
     g_PistolchoiceT[client] = pistol_choice_t_glock;
+    g_PistolRchoiceT[client] = pistol_choice_t_glock;
     g_RifleChoiceCT[client] = rifle_choice_ct_m4a4;
     g_RifleChoiceT[client] = rifle_choice_t_ak47;
     g_side[client] = 0;
@@ -177,7 +212,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
                 GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) != 1 &&
                 GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) != 1 && 
                 GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) != 1 && 
-                GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) != 1)
+                GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) != 1 &&
+                GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) != 1)
             {
                 // on est pas T only
                 if (g_side[client] != 1)
@@ -410,6 +446,28 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                         primary = "weapon_galilar";
                     case rifle_choice_t_sg553:
                         primary = "weapon_sg556";
+                    case rifle_choice_t_ssg08:
+                        primary = "weapon_ssg08";
+                    case rifle_choice_t_mac10:
+                        primary = "weapon_mac10";
+                    case rifle_choice_t_mp7:
+                        primary = "weapon_mp7";
+                    case rifle_choice_t_ump45:
+                        primary = "weapon_ump45";
+                    case rifle_choice_t_p90:
+                        primary = "weapon_p90";
+                    case rifle_choice_t_bizon:
+                        primary = "weapon_bizon";
+                    case rifle_choice_t_nova:
+                        primary = "weapon_nova";
+                    case rifle_choice_t_xm1014:
+                        primary = "weapon_xm1014";
+                    case rifle_choice_t_sawedoff:
+                        primary = "weapon_sawedoff";
+                    case rifle_choice_t_m249:
+                        primary = "weapon_m249";
+                    case rifle_choice_t_negev:
+                        primary = "weapon_negev";
                 }
             }
         }
@@ -439,6 +497,11 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
             {
                 secondary = "weapon_revolver";
                 dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else if (g_PistolRchoiceT[client] == pistol_choice_t_dualies && GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+            {
+                secondary = "weapon_elite";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_dualies;
             }
             else
             {
@@ -471,6 +534,11 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
             {
                 secondary = "weapon_revolver";
                 dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else if (g_PistolchoiceT[client] == pistol_choice_t_dualies && GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+            {
+                secondary = "weapon_elite";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_dualies;
             }
             else
             {
@@ -554,6 +622,28 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                         primary = "weapon_m4a1_silencer";
                     case rifle_choice_ct_aug:
                         primary = "weapon_aug";
+                    case rifle_choice_ct_ssg08:
+                        primary = "weapon_ssg08";
+                    case rifle_choice_ct_mp9:
+                        primary = "weapon_mp9";
+                    case rifle_choice_ct_mp7:
+                        primary = "weapon_mp7";
+                    case rifle_choice_ct_ump45:
+                        primary = "weapon_ump45";
+                    case rifle_choice_ct_p90:
+                        primary = "weapon_p90";
+                    case rifle_choice_ct_bizon:
+                        primary = "weapon_bizon";
+                    case rifle_choice_ct_nova:
+                        primary = "weapon_nova";
+                    case rifle_choice_ct_xm1014:
+                        primary = "weapon_xm1014";
+                    case rifle_choice_ct_mag7:
+                        primary = "weapon_mag7";
+                    case rifle_choice_ct_m249:
+                        primary = "weapon_m249";
+                    case rifle_choice_ct_negev:
+                        primary = "weapon_negev";
                 }
             }
         }
@@ -584,6 +674,11 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
             {
                 secondary = "weapon_revolver";
                 dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else if (g_PistolRchoiceCT[client] == pistol_choice_ct_dualies && GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+            {
+                secondary = "weapon_elite";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_dualies;
             }
             else if (g_PistolRchoiceCT[client] == pistol_choice_ct_usp)
             {
@@ -620,6 +715,11 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
             {
                 secondary = "weapon_revolver";
                 dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_r8;
+            }
+            else if (g_PistolchoiceCT[client] == pistol_choice_ct_dualies && GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+            {
+                secondary = "weapon_elite";
+                dollars_for_mimic_competitive_pistol_rounds = dollars_for_mimic_competitive_pistol_rounds - gun_price_for_dualies;
             }
             else if (g_PistolchoiceCT[client] == pistol_choice_ct_usp)
             {
@@ -719,7 +819,7 @@ public int getkevlar(bool mimicCompetitivePistolRounds, bool isPistolRound)
         if (dollars_for_mimic_competitive_pistol_rounds >= kevlar_price)
         {
             odds = GetRandomInt(0,10);
-            // pourcentage between 0% to 100% to have kevlar if money
+            // percentage between 0% to 100% to have kevlar if money
             if (odds <= GetConVarInt(g_h_sm_retakes_kevlar_probability_on_comp_pistol_rounds))
             {
                 kevlar = 100;
@@ -749,7 +849,7 @@ public bool getkit(bool mimicCompetitivePistolRounds, bool isPistolRound)
 
 public void GivePistolRMenuCT(int client) {
     Handle menu = CreateMenu(MenuHandler_PISTOLR_CT);
-    SetMenuTitle(menu, "Select a CT PR pistol:");
+    SetMenuTitle(menu, "Select a CT pistol round pistol:");
     AddMenuInt(menu, pistol_choice_ct_hkp2000, "P2000");
     AddMenuInt(menu, pistol_choice_ct_usp, "USP-S");
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
@@ -762,12 +862,14 @@ public void GivePistolRMenuCT(int client) {
         AddMenuInt(menu, pistol_choice_ct_deagle, "Deagle");
     if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
         AddMenuInt(menu, pistol_choice_ct_r8, "Revolver");
+    if (GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_dualies, "Dualies");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
 public void GivePistolRMenuT(int client) {
     Handle menu = CreateMenu(MenuHandler_PISTOLR_T);
-    SetMenuTitle(menu, "Select a T PR pistol:");
+    SetMenuTitle(menu, "Select a T pistol round pistol:");
     AddMenuInt(menu, pistol_choice_t_glock, "Glock");
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
         AddMenuInt(menu, pistol_choice_t_p250, "P250");
@@ -779,6 +881,8 @@ public void GivePistolRMenuT(int client) {
         AddMenuInt(menu, pistol_choice_t_deagle, "Deagle");
     if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
         AddMenuInt(menu, pistol_choice_t_r8, "Revolver");
+    if (GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_dualies, "Dualies");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
@@ -816,36 +920,40 @@ public int MenuHandler_PISTOLR_T(Handle menu, MenuAction action, int param1, int
 
 public void GivePistolMenuCT(int client) {
     Handle menu = CreateMenu(MenuHandler_PISTOL_CT);
-    SetMenuTitle(menu, "Select a CT GR pistol:");
+    SetMenuTitle(menu, "Select a CT gun round pistol:");
     AddMenuInt(menu, pistol_choice_ct_hkp2000, "P2000");
     AddMenuInt(menu, pistol_choice_ct_usp, "USP-S");
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
         AddMenuInt(menu, pistol_choice_ct_p250, "P250");
     if (GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_fiveseven, "Fiveseven");
+        AddMenuInt(menu, pistol_choice_ct_fiveseven, "Five-Seven");
     if (GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_cz, "CZ75");
+        AddMenuInt(menu, pistol_choice_ct_cz, "CZ75-Auto");
     if (GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_deagle, "Deagle");
+        AddMenuInt(menu, pistol_choice_ct_deagle, "Desert Eagle");
     if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_r8, "Revolver");
+        AddMenuInt(menu, pistol_choice_ct_r8, "R8 Revolver");
+    if (GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_ct_dualies, "Dual Berettas");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
 public void GivePistolMenuT(int client) {
     Handle menu = CreateMenu(MenuHandler_PISTOL_T);
-    SetMenuTitle(menu, "Select a T GR pistol:");
-    AddMenuInt(menu, pistol_choice_t_glock, "Glock");
+    SetMenuTitle(menu, "Select a T gun round pistol:");
+    AddMenuInt(menu, pistol_choice_t_glock, "Glock-18");
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
         AddMenuInt(menu, pistol_choice_t_p250, "P250");
     if (GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
         AddMenuInt(menu, pistol_choice_t_tec9, "Tec-9");
     if (GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_cz, "CZ75");
+        AddMenuInt(menu, pistol_choice_t_cz, "CZ75-Auto");
     if (GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_deagle, "Deagle");
+        AddMenuInt(menu, pistol_choice_t_deagle, "Desert Eagle");
     if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_r8, "Revolver");
+        AddMenuInt(menu, pistol_choice_t_r8, "R8 Revolver");
+    if (GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
+        AddMenuInt(menu, pistol_choice_t_dualies, "Dual Berettas");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
@@ -883,20 +991,42 @@ public int MenuHandler_PISTOL_T(Handle menu, MenuAction action, int param1, int 
 
 public void GiveWeaponMenuCT(int client) {
     Handle menu = CreateMenu(MenuHandler_RIFLE_CT);
-    SetMenuTitle(menu, "Select a CT rifle:");
-    AddMenuInt(menu, rifle_choice_ct_famas, "Famas");
+    SetMenuTitle(menu, "Select a CT primary:");
     AddMenuInt(menu, rifle_choice_ct_m4a4, "M4A4");
     AddMenuInt(menu, rifle_choice_ct_m4a1_s, "M4A1-S");
-    AddMenuInt(menu, rifle_choice_ct_aug, "Aug");
+    AddMenuInt(menu, rifle_choice_ct_famas, "FAMAS");
+    AddMenuInt(menu, rifle_choice_ct_aug, "AUG");
+    AddMenuInt(menu, rifle_choice_ct_ssg08, "SSG 08");
+    AddMenuInt(menu, rifle_choice_ct_mp9, "MP9");
+    AddMenuInt(menu, rifle_choice_ct_mp7, "MP7");
+    AddMenuInt(menu, rifle_choice_ct_ump45, "UMP-45");
+    AddMenuInt(menu, rifle_choice_ct_p90, "P90");
+    AddMenuInt(menu, rifle_choice_ct_bizon, "PP-Bizon");
+    AddMenuInt(menu, rifle_choice_ct_nova, "Nova");
+    AddMenuInt(menu, rifle_choice_ct_xm1014, "XM1014");
+    AddMenuInt(menu, rifle_choice_ct_mag7, "MAG-7");
+    AddMenuInt(menu, rifle_choice_ct_m249, "M249");
+    AddMenuInt(menu, rifle_choice_ct_negev, "Negev");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
 public void GiveWeaponMenuT(int client) {
     Handle menu = CreateMenu(MenuHandler_RIFLE_T);
-    SetMenuTitle(menu, "Select a T rifle:");
-    AddMenuInt(menu, rifle_choice_t_galil, "Galil");
-    AddMenuInt(menu, rifle_choice_t_ak47, "AK47");
-    AddMenuInt(menu, rifle_choice_t_sg553, "SG553");
+    SetMenuTitle(menu, "Select a T primary:");
+    AddMenuInt(menu, rifle_choice_t_ak47, "AK-47");
+    AddMenuInt(menu, rifle_choice_t_galil, "Galil AR");
+    AddMenuInt(menu, rifle_choice_t_sg553, "SG 553");
+    AddMenuInt(menu, rifle_choice_t_ssg08, "SSG 08");
+    AddMenuInt(menu, rifle_choice_t_mac10, "MAC-10");
+    AddMenuInt(menu, rifle_choice_t_mp7, "MP7");
+    AddMenuInt(menu, rifle_choice_t_ump45, "UMP-45");
+    AddMenuInt(menu, rifle_choice_t_p90, "P90");
+    AddMenuInt(menu, rifle_choice_t_bizon, "PP-Bizon");
+    AddMenuInt(menu, rifle_choice_t_nova, "Nova");
+    AddMenuInt(menu, rifle_choice_t_xm1014, "XM1014");
+    AddMenuInt(menu, rifle_choice_t_sawedoff, "Sawed-Off");
+    AddMenuInt(menu, rifle_choice_t_m249, "M249");
+    AddMenuInt(menu, rifle_choice_t_negev, "Negev");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
