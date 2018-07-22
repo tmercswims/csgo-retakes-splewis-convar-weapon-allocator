@@ -204,36 +204,28 @@ public void OnClientConnected(int client) {
     g_AwpChoiceCT[client] = false;
 }
 
-public Action OnClientSayCommand(int client, const char[] command, const char[] args) {
-    char gunsChatCommands[][] = { "/gun", "/guns", "gun", "guns", ".gun", ".guns", ".setup", "!gun", "!guns", "gnus" };
-    for (int i = 0; i < sizeof(gunsChatCommands); i++) {
-        if (strcmp(args[0], gunsChatCommands[i], false) == 0) {
-            if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) != 1 && 
-                GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) != 1 &&
-                GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) != 1 && 
-                GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) != 1 && 
-                GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) != 1 &&
-                GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) != 1)
-            {
-                // on est pas T only
-                if (g_side[client] != 1)
-                    GiveWeaponMenuCT(client);
-                else
-                    GiveWeaponMenuT(client);
-            }
-            else
-            {
-                // on est pas T only
-                if (g_side[client] != 1)
-                    GivePistolRMenuCT(client);
-                else
-                    GivePistolRMenuT(client);
-            }
-            break;
-        }
+public void Retakes_OnGunsCommand(int client) {
+    if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) != 1 &&
+        GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) != 1 &&
+        GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) != 1 &&
+        GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) != 1 &&
+        GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) != 1 &&
+        GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) != 1)
+    {
+        // on est pas T only
+        if (g_side[client] != 1)
+            GiveWeaponMenuCT(client);
+        else
+            GiveWeaponMenuT(client);
     }
-
-    return Plugin_Continue;
+    else
+    {
+        // on est pas T only
+        if (g_side[client] != 1)
+            GivePistolRMenuCT(client);
+        else
+            GivePistolRMenuT(client);
+    }
 }
 
 public void Retakes_OnWeaponsAllocated(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bombsite) {
@@ -855,15 +847,15 @@ public void GivePistolRMenuCT(int client) {
     if (GetConVarInt(g_h_sm_retakes_weapon_p250_enabled) == 1)
         AddMenuInt(menu, pistol_choice_ct_p250, "P250");
     if (GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_fiveseven, "Fiveseven");
+        AddMenuInt(menu, pistol_choice_ct_fiveseven, "Five-Seven");
     if (GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_cz, "CZ75");
+        AddMenuInt(menu, pistol_choice_ct_cz, "CZ75-Auto");
     if (GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_deagle, "Deagle");
+        AddMenuInt(menu, pistol_choice_ct_deagle, "Desert Eagle");
     if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_r8, "Revolver");
+        AddMenuInt(menu, pistol_choice_ct_r8, "R8 Revolver");
     if (GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_ct_dualies, "Dualies");
+        AddMenuInt(menu, pistol_choice_ct_dualies, "Dual Berettas");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
@@ -876,13 +868,13 @@ public void GivePistolRMenuT(int client) {
     if (GetConVarInt(g_h_sm_retakes_weapon_tec9_fiveseven_enabled) == 1)
         AddMenuInt(menu, pistol_choice_t_tec9, "Tec-9");
     if (GetConVarInt(g_h_sm_retakes_weapon_cz_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_cz, "CZ75");
+        AddMenuInt(menu, pistol_choice_t_cz, "CZ75-Auto");
     if (GetConVarInt(g_h_sm_retakes_weapon_deagle_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_deagle, "Deagle");
+        AddMenuInt(menu, pistol_choice_t_deagle, "Desert Eagle");
     if (GetConVarInt(g_h_sm_retakes_weapon_r8_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_r8, "Revolver");
+        AddMenuInt(menu, pistol_choice_t_r8, "R8 Revolver");
     if (GetConVarInt(g_h_sm_retakes_weapon_dualies_enabled) == 1)
-        AddMenuInt(menu, pistol_choice_t_dualies, "Dualies");
+        AddMenuInt(menu, pistol_choice_t_dualies, "Dual Berettas");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
